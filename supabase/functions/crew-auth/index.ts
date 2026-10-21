@@ -17,7 +17,7 @@ async function adminMember(req: Request) {
   const { data: { user }, error } = await authClient.auth.getUser(token);
   if (error || !user) return null;
   const { data: member } = await adminDb.from("crew_members").select("id,is_admin,status").eq("auth_user_id", user.id).maybeSingle();
-  return member?.is_admin === true ? member : null;
+  return member?.is_admin === true && member?.status === "active" ? member : null;
 }
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers });
