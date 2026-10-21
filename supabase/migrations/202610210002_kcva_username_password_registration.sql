@@ -30,3 +30,5 @@ revoke all on public.registration_codes from anon, authenticated;
 -- Do not let browser users bind identities, change account usernames, or grant staff privileges.
 revoke update (auth_user_id, is_admin, crew_username, auth_email, callsign, ifc_username, discord_user_id)
   on public.crew_members from authenticated;
+
+alter table public.registration_codes add column if not exists existing_crew_member_id uuid references public.crew_members(id) on delete restrict;
