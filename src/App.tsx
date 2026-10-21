@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Activity, ArrowDownRight, ArrowRight, Bell, CalendarDays, Check, ChevronDown, CircleHelp, Clock3, Compass, FileText, Gauge, LogOut, Menu, Moon, Plane, RefreshCw, Search, Settings2, ShieldCheck, Sun, Trophy, UserRound, Users, X } from 'lucide-react';
 import { supabase, supabaseConfigured } from './lib/supabase';
+import AuthScreen from './Auth';
 
 type Page = 'Dashboard'|'Logbook'|'File PIREP'|'Leaderboard'|'Events'|'Fleet'|'Tracker'|'Admin'|'Profile';
 type Pirep = { id:string; flight_number:string|null; dep_icao:string|null; arr_icao:string|null; aircraft:string|null; flight_time_minutes:number; status:string; flight_date:string; created_at:string; };
@@ -14,12 +15,12 @@ const demoPireps:Pirep[] = [
 {id:'4',flight_number:'KC702',dep_icao:'ALA',arr_icao:'DEL',aircraft:'Boeing 767-300ER',flight_time_minutes:238,status:'on hold',flight_date:'2026-10-11',created_at:'2026-10-11'},
 {id:'5',flight_number:'KC309',dep_icao:'CIT',arr_icao:'ALA',aircraft:'Airbus A320',flight_time_minutes:88,status:'rejected',flight_date:'2026-10-08',created_at:'2026-10-08'}
 ];
-export default function App(){
+function Workspace(){
  const [page,setPage]=useState<Page>(location.pathname==='/profile'?'Profile':'Dashboard');
  const [theme,setTheme]=useState<'system'|'light'|'dark'>('system');
  const [menuOpen,setMenuOpen]=useState(false); const [profileMenu,setProfileMenu]=useState(false); const [refreshing,setRefreshing]=useState(false);
  const [username,setUsername]=useState('Pilot'); const [requestedUsername,setRequestedUsername]=useState(''); const [callsign,setCallsign]=useState('KC-001'); const [discord,setDiscord]=useState(''); const [avatar,setAvatar]=useState(''); const [isAdmin,setIsAdmin]=useState(false);
- const [pireps,setPireps]=useState<Pirep[]>(demoPireps); const [search,setSearch]=useState(''); const [notice,setNotice]=useState('');
+ const [pireps,setPireps]=useState<Pirep[]>([]); const [search,setSearch]=useState(''); const [notice,setNotice]=useState('');
  const [form,setForm]=useState({flight_number:'',dep_icao:'',arr_icao:'',aircraft:'',flight_time_minutes:'',flight_date:new Date().toISOString().slice(0,10),notes:''});
  const [requestWarning,setRequestWarning]=useState(false); const [countdown,setCountdown]=useState(0); const [requesting,setRequesting]=useState(false);
  const approvedMins=useMemo(()=>pireps.filter(p=>p.status==='approved').reduce((n,p)=>n+p.flight_time_minutes,0),[pireps]);
@@ -57,4 +58,19 @@ export default function App(){
   </main></div>{notice&&<div className="toast"><Check size={16}/>{notice}<button onClick={()=>setNotice('')}><X size={14}/></button></div>}
   <footer className="site-footer"><span>© {new Date().getFullYear()} Air Astana Virtual</span><span>KCVA · CREW CENTER</span></footer>
  </div>;
+}
+
+
+export default function App(){
+ const [sessionReady,setSessionReady]=useState(false);
+ const [signedIn,setSignedIn]=useState(false);
+ useEffect(()=>{
+  if(!supabase){setSessionReady(true);setSignedIn(false);return}
+  let alive=true;
+  supabase.auth.getSession().then(({data})=>{if(alive){setSignedIn(Boolean(data.session));setSessionReady(true)}});
+  const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{setSignedIn(Boolean(session));setSessionReady(true);if(session&&['/login','/register','/'].includes(location.pathname))history.replaceState({},'','/your-dashboard');if(!session&&!['/login','/register'].includes(location.pathname))history.replaceState({},'','/login');});
+  return()=>{alive=false;subscription.unsubscribe()};
+ },[]);
+ if(!sessionReady)return <div className="auth-loading"><div className="auth-loading-mark">KC</div><span>Preparing crew center…</span></div>;
+ return signedIn?<Workspace/>:<AuthScreen/>;
 }
