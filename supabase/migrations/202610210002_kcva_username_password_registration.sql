@@ -28,5 +28,5 @@ create index if not exists registration_codes_active_idx
 alter table public.registration_codes enable row level security;
 revoke all on public.registration_codes from anon, authenticated;
 -- Do not let browser users bind identities, change account usernames, or grant staff privileges.
-revoke update (auth_user_id, is_admin, crew_username, auth_email, callsign, ifc_username, discord_user_id, discord_username)
+revoke update (auth_user_id, is_admin, crew_username, auth_email, callsign, ifc_username, discord_user_id)
   on public.crew_members from authenticated;
