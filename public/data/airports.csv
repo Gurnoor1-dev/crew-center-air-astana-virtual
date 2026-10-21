@@ -1,0 +1,48 @@
+airport_name,airport_icao,airport_coordinates,flights_from_this_airport,more_to_know
+Almaty International Airport,UAAA,"43.3521,77.0405",24,Primary Air Astana Virtual hub in Kazakhstan.
+Astana International Airport,UACC,"51.0222,71.4669",24,Primary Air Astana Virtual hub serving Kazakhstan's capital.
+Aktau International Airport,UATE,"43.8601,51.0920",0,Kazakhstan domestic destination.
+Aktobe International Airport,UATT,"50.2458,57.2067",0,Kazakhstan domestic destination.
+Atyrau International Airport,UATG,"47.1219,51.8214",0,Kazakhstan domestic destination.
+Kostanay International Airport,UAUU,"53.2069,63.5503",0,Kazakhstan domestic destination.
+Kyzylorda Airport,UAOO,"44.7069,65.5925",0,Kazakhstan domestic destination.
+Shymkent International Airport,UAII,"42.3642,69.4789",0,Kazakhstan domestic destination.
+Oral Ak Zhol Airport,UARR,"51.1508,51.5431",0,Kazakhstan domestic destination.
+Ust-Kamenogorsk Airport,UASK,"50.0369,82.4942",0,Kazakhstan domestic destination.
+Manas International Airport,UAFM,"43.0613,74.4776",0,Central Asian destination in Kyrgyzstan.
+Osh International Airport,UAFO,"40.6090,72.7933",0,Central Asian destination in Kyrgyzstan.
+Dushanbe International Airport,UTDD,"38.5433,68.8250",0,Central Asian destination in Tajikistan.
+Tashkent International Airport,UTTT,"41.2579,69.2812",0,Central Asian destination in Uzbekistan.
+Heydar Aliyev International Airport,UBBB,"40.4675,50.0467",0,Caucasus destination in Azerbaijan.
+Tbilisi International Airport,UGTB,"41.6692,44.9547",0,Caucasus destination in Georgia.
+Batumi International Airport,UGSB,"41.6103,41.5997",0,Georgian Black Sea destination.
+Istanbul Airport,LTFM,"41.2753,28.7519",0,Turkish gateway.
+Antalya Airport,LTAI,"36.8987,30.8005",0,Turkish leisure destination.
+Milas-Bodrum Airport,LTFE,"37.2506,27.6643",0,Turkish leisure destination.
+Amsterdam Schiphol,EHAM,"52.3086,4.7639",0,European destination.
+Frankfurt Airport,EDDF,"50.0379,8.5622",0,European destination.
+London Heathrow,EGLL,"51.4700,-0.4543",0,European destination.
+Paris Charles de Gaulle,LFPG,"49.0097,2.5479",0,European destination.
+Podgorica Airport,LYPG,"42.3594,19.2519",0,European destination in Montenegro.
+Beijing Capital International Airport,ZBAA,"40.0799,116.6031",0,China destination.
+Guangzhou Baiyun International Airport,ZGGG,"23.3924,113.2988",0,China destination.
+Shanghai Pudong International Airport,ZSPD,"31.1443,121.8083",0,China destination.
+Urumqi Diwopu International Airport,ZWWW,"43.9071,87.4742",0,China destination.
+Sanya Phoenix International Airport,ZJSY,"18.3029,109.4123",0,China leisure destination.
+Incheon International Airport,RKSI,"37.4602,126.4407",0,South Korea destination.
+Indira Gandhi International Airport,VIDP,"28.5562,77.1000",0,India destination.
+Chhatrapati Shivaji Maharaj International Airport,VABB,"19.0887,72.8679",0,India destination.
+Hamad International Airport,OTHH,"25.2731,51.6081",0,Qatar destination.
+Dubai International Airport,OMDB,"25.2532,55.3657",0,UAE destination.
+King Abdulaziz International Airport,OEJN,"21.6796,39.1565",0,Saudi Arabia destination.
+Prince Mohammad bin Abdulaziz International Airport,OEMA,"24.5534,39.7051",0,Saudi Arabia destination.
+Velana International Airport,VRMM,"4.1918,73.5291",0,Maldives destination.
+Suvarnabhumi Airport,VTBS,"13.6811,100.7470",0,Thailand destination.
+Phuket International Airport,VTSP,"8.1132,98.3169",0,Thailand leisure destination.
+Da Nang International Airport,VVDN,"16.0439,108.1994",0,Vietnam destination.
+Cam Ranh International Airport,VVCR,"11.9982,109.2194",0,Vietnam destination.
+Phu Quoc International Airport,VVPQ,"10.1698,103.9931",0,Vietnam leisure destination.
+Kuala Lumpur International Airport,WMKK,"2.7456,101.7099",0,Malaysia destination.
+Ngurah Rai International Airport,WADD,"-8.7482,115.1672",0,Indonesia destination.
+Bandaranaike International Airport,VCBI,"7.1808,79.8841",0,Sri Lanka destination.
+Narita International Airport,RJAA,"35.7720,140.3929",0,Japan destination.
