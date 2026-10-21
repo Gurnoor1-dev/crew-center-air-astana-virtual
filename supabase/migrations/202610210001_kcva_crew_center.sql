@@ -83,3 +83,25 @@ create policy "Authenticated users can read fleet" on public.fleet_aircraft
 
 -- Admin write permissions are intentionally not granted by these policies.
 -- Provision admin status only through trusted server-side tooling; avoid self-service role updates.
+
+-- Pilot-scoped access. A backend process must link auth_user_id after verified login.
+drop policy if exists "Pilots can read own crew profile" on public.crew_members;
+create policy "Pilots can read own crew profile" on public.crew_members
+  for select to authenticated using (auth_user_id = (select auth.uid()));
+revoke update on public.crew_members from authenticated;
+grant update (discord_username, avatar_url, discord_avatar_url) on public.crew_members to authenticated;
+drop policy if exists "Pilots can update own profile fields" on public.crew_members;
+create policy "Pilots can update own profile fields" on public.crew_members
+  for update to authenticated using (auth_user_id = (select auth.uid()))
+  with check (auth_user_id = (select auth.uid()));
+drop policy if exists "Pilots can read own PIREPs" on public.pireps;
+create policy "Pilots can read own PIREPs" on public.pireps
+  for select to authenticated using (exists (
+    select 1 from public.crew_members cm where cm.id = crew_member_id and cm.auth_user_id = (select auth.uid())
+  ));
+drop policy if exists "Pilots can submit own PIREPs" on public.pireps;
+create policy "Pilots can submit own PIREPs" on public.pireps
+  for insert to authenticated with check (
+    status = 'pending' and reviewed_by is null and reviewed_at is null and
+    exists (select 1 from public.crew_members cm where cm.id = crew_member_id and cm.auth_user_id = (select auth.uid()))
+  );
