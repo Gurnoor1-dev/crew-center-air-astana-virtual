@@ -8,13 +8,6 @@ type Pirep = { id:string; flight_number:string|null; dep_icao:string|null; arr_i
 const pages: {name:Page; icon:any}[] = [{name:'Dashboard',icon:Gauge},{name:'Logbook',icon:FileText},{name:'File PIREP',icon:Plane},{name:'Leaderboard',icon:Trophy},{name:'Events',icon:CalendarDays},{name:'Fleet',icon:Compass},{name:'Tracker',icon:Activity}];
 const rankFor = (mins:number) => { const h=mins/60; if(h<10)return 'Cadet'; if(h<30)return 'Second Officer'; if(h<75)return 'First Officer'; if(h<150)return 'Senior First Officer'; if(h<300)return 'Captain'; if(h<500)return 'Senior Captain'; return 'Fleet Captain'; };
 const fmtTime = (mins:number) => `${Math.floor(mins/60)}h ${String(mins%60).padStart(2,'0')}m`;
-const demoPireps:Pirep[] = [
-{id:'1',flight_number:'KC214',dep_icao:'ALA',arr_icao:'NQZ',aircraft:'Airbus A321neo',flight_time_minutes:94,status:'approved',flight_date:'2026-10-19',created_at:'2026-10-19'},
-{id:'2',flight_number:'KC118',dep_icao:'NQZ',arr_icao:'CIT',aircraft:'Airbus A320',flight_time_minutes:72,status:'pending',flight_date:'2026-10-17',created_at:'2026-10-17'},
-{id:'3',flight_number:'KC405',dep_icao:'ALA',arr_icao:'TAS',aircraft:'Airbus A321neo',flight_time_minutes:105,status:'approved',flight_date:'2026-10-14',created_at:'2026-10-14'},
-{id:'4',flight_number:'KC702',dep_icao:'ALA',arr_icao:'DEL',aircraft:'Boeing 767-300ER',flight_time_minutes:238,status:'on hold',flight_date:'2026-10-11',created_at:'2026-10-11'},
-{id:'5',flight_number:'KC309',dep_icao:'CIT',arr_icao:'ALA',aircraft:'Airbus A320',flight_time_minutes:88,status:'rejected',flight_date:'2026-10-08',created_at:'2026-10-08'}
-];
 function Workspace(){
  const [page,setPage]=useState<Page>(location.pathname==='/profile'?'Profile':'Dashboard');
  const [theme,setTheme]=useState<'system'|'light'|'dark'>('system');
