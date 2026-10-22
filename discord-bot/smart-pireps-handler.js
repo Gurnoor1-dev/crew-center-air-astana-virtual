@@ -14,7 +14,7 @@
 const SMART_PIREPS_URL = String(
   process.env.SMART_PIREPS_API_URL ||
     "https://huqvffdiwqilbpxepfpo.supabase.co/functions/v1/smart-pireps"
-).replace(/\\/$/, "");
+).replace(/\/$/, "");
 
 export async function handleSmartPirepButton(interaction) {
   if (!interaction.isButton?.()) return false;
