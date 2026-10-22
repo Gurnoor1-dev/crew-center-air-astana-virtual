@@ -4,8 +4,8 @@
  * Add this import to the existing bot entry file:
  *   import { handleSmartPirepButton } from "./smart-pireps-handler.js";
  *
- * Inside the existing interactionCreate listener, before other button handling:
- *   if (await handleSmartPirepButton(interaction)) return;
+ * After creating the Discord client, register the handler once:
+ *   installSmartPirepHandler(client);
  *
  * Environment:
  *   CREW_CENTER_API_URL (optional; defaults to the deployed Supabase function)
@@ -70,4 +70,18 @@ export async function handleSmartPirepButton(interaction) {
   }
 
   return true;
+}
+
+/**
+ * Register this as a separate interaction listener so the existing bot
+ * commands and ATIS buttons can remain unchanged.
+ */
+export function installSmartPirepHandler(client) {
+  client.on("interactionCreate", async interaction => {
+    try {
+      await handleSmartPirepButton(interaction);
+    } catch (error) {
+      console.error("Smart PIREP interaction error:", error);
+    }
+  });
 }
