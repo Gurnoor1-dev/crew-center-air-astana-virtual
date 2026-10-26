@@ -11,6 +11,67 @@ const reply = (data: unknown, status = 200) => new Response(JSON.stringify(data)
 const fail = (message: string, status = 400) => reply({ error: message }, status);
 const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value.trim().toUpperCase())))).map(v => v.toString(16).padStart(2, "0")).join("");
 const normalUsername = (v: string) => v.trim().toLowerCase();
+
+const IF_KEY = Deno.env.get("INFINITE_FLIGHT_API_KEY") || "";
+let ifSessionsCache: { at: number; data: any[] } | null = null;
+const ifFlightsCache = new Map<string, { at: number; data: any[] }>();
+async function ifApiJson(url: string) {
+  const response = await fetch(url, { headers: { Authorization: "Bearer " + IF_KEY } });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || (typeof payload?.errorCode === "number" && payload.errorCode !== 0)) {
+    const status = response.status || (payload?.errorCode === 4 ? 401 : 502);
+    throw new Error("Infinite Flight API request failed (" + status + "). Check API key access and Live API response.");
+  }
+  return payload;
+}
+async function liveTracker() {
+  if (!IF_KEY) return reply({ configured: false, flights: [], updated_at: null, message: "INFINITE_FLIGHT_API_KEY is not configured for the crew-auth Edge Function." });
+  try {
+    const now = Date.now();
+    if (!ifSessionsCache || now - ifSessionsCache.at >= 10 * 60 * 1000) {
+      const payload = await ifApiJson("https://api.infiniteflight.com/public/v2/sessions");
+      ifSessionsCache = { at: now, data: Array.isArray(payload?.result) ? payload.result : [] };
+    }
+    const sessions = ifSessionsCache.data;
+    const flightLists = await Promise.all(sessions.map(async (session: any) => {
+      const id = String(session?.id || "");
+      if (!id) return [];
+      const cached = ifFlightsCache.get(id);
+      if (cached && now - cached.at < 15 * 1000) return cached.data.map((flight: any) => ({ ...flight, session: session.name || "Infinite Flight" }));
+      const payload = await ifApiJson("https://api.infiniteflight.com/public/v2/sessions/" + encodeURIComponent(id) + "/flights");
+      const flights = Array.isArray(payload?.result) ? payload.result : [];
+      ifFlightsCache.set(id, { at: now, data: flights });
+      return flights.map((flight: any) => ({ ...flight, session: session.name || "Infinite Flight" }));
+    }));
+    const flights = flightLists.flat().filter((flight: any) => String(flight?.callsign || "").trim().toUpperCase().endsWith("QR")).map((flight: any) => {
+      const position = flight?.position || flight?.location || flight?.aircraftState || {};
+      const rawLat = flight?.latitude ?? position?.latitude;
+      const rawLon = flight?.longitude ?? position?.longitude;
+      const rawAltitude = flight?.altitude ?? flight?.altitudeMsl ?? position?.altitude;
+      const rawSpeed = flight?.speed ?? flight?.groundSpeed ?? flight?.trueAirspeed ?? position?.speed;
+      const lat = rawLat == null ? NaN : Number(rawLat);
+      const lon = rawLon == null ? NaN : Number(rawLon);
+      const altitude = rawAltitude == null ? NaN : Number(rawAltitude);
+      const speed = rawSpeed == null ? NaN : Number(rawSpeed);
+      return {
+        flightId: flight?.flightId || flight?.id || null,
+        callsign: String(flight?.callsign || "").trim(),
+        username: flight?.username || "Unknown pilot",
+        aircraft: typeof flight?.aircraft === "string" ? flight.aircraft : (flight?.aircraft?.name || flight?.aircraftName || "Unknown aircraft"),
+        session: flight?.session || "Infinite Flight",
+        latitude: Number.isFinite(lat) && lat >= -90 && lat <= 90 ? lat : null,
+        longitude: Number.isFinite(lon) && lon >= -180 && lon <= 180 ? lon : null,
+        altitude: Number.isFinite(altitude) ? altitude : null,
+        speed: Number.isFinite(speed) ? speed : null
+      };
+    });
+    return reply({ configured: true, flights, updated_at: new Date().toISOString(), session_count: sessions.length });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not load Infinite Flight traffic.";
+    return reply({ configured: true, flights: [], updated_at: new Date().toISOString(), message }, 502);
+  }
+}
+
 async function adminMember(req: Request) {
   const token = req.headers.get("Authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return null;
@@ -25,6 +86,7 @@ Deno.serve(async (req: Request) => {
   try {
     const body = await req.json();
     const action = String(body.action || "");
+    if (action === "live_tracker") return await liveTracker();
     if (action === "verify_code") {
       const code = String(body.code || "").trim();
       if (!code) return fail("Enter your registration code.");
