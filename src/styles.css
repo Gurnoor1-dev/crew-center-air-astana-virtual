@@ -25,3 +25,35 @@
 @keyframes sidebarCaptionIn{from{opacity:0;letter-spacing:.24em}to{opacity:1;letter-spacing:.17em}}
 @media(max-width:700px){.sidebar{transform:translateX(-102%);opacity:0;display:flex;visibility:hidden;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .25s ease,visibility .34s}.sidebar.open{transform:translateX(0);opacity:1;visibility:visible;animation:none}}
 @media(prefers-reduced-motion:reduce){.sidebar,.sidebar .nav-item,.sidebar .nav-item svg,.sidebar .nav-item:after{animation:none!important;transition:none!important;transform:none!important}}
+
+
+/* Infinite Flight-inspired fleet navigation and live map */
+.layout{display:flex;flex-direction:column;min-height:calc(100vh - 125px);max-width:1600px}
+.sidebar{position:sticky;top:78px;z-index:15;height:auto;min-height:0;flex-direction:row;align-items:center;gap:4px;padding:0 28px;border-right:0;border-bottom:1px solid var(--line);background:var(--bg);overflow-x:auto;white-space:nowrap}
+.nav-caption,.sidebar-bottom{display:none!important}
+.nav-item{width:auto;flex:0 0 auto;padding:17px 16px;border-radius:0;border-bottom:2px solid transparent;font-size:13px;gap:9px}
+.nav-item.active{background:transparent;color:var(--text);border-bottom-color:#d8d8dc}
+.main-content{width:100%;max-width:1500px;margin:0 auto;padding:34px 38px 54px}
+.topbar{height:78px;padding:0 38px}
+.live-map-card{overflow:hidden}
+.live-map-card .section-heading h3{display:flex;align-items:center;gap:10px}
+.live-map-frame{height:380px;position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#10171b;background-image:linear-gradient(#26313955 1px,transparent 1px),linear-gradient(90deg,#26313955 1px,transparent 1px);background-size:42px 42px}
+.map-grid-lines{position:absolute;inset:0;background:radial-gradient(ellipse at 52% 48%,#24313a 0%,#11181d 72%);opacity:.95}
+.map-art{position:absolute;inset:0;width:100%;height:100%;opacity:.6}
+.map-land{fill:#263139;stroke:#64717a;stroke-width:1.5}
+.map-coast{fill:none;stroke:#56636c;stroke-width:1.5}
+.map-plane{position:absolute;z-index:2;display:flex;align-items:center;gap:6px;transform:translate(-50%,-50%);color:#55b879;background:#101715e8;border:1px solid #55b87988;padding:6px 8px;border-radius:8px;box-shadow:0 5px 18px #0007;white-space:nowrap;font-size:11px;font-weight:700}
+.map-plane svg{fill:#55b879;stroke:#55b879}
+.map-plane span{color:#f1f4f5}
+.map-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;color:#d8e0e4}
+.map-empty svg{color:#55b879}
+.map-empty span{color:#96a2a9;max-width:330px;line-height:1.6}
+.map-zoom{position:absolute;right:14px;bottom:14px;display:grid;border:1px solid #46525a;border-radius:9px;overflow:hidden;background:#111a20;color:#e8eef0}
+.map-zoom span{display:grid;place-items:center;width:38px;height:38px;font-size:22px}
+.map-zoom span+span{border-top:1px solid #46525a}
+.map-legend{display:flex;gap:20px;align-items:center;flex-wrap:wrap;padding:14px 2px 0;color:var(--muted);font-size:11px}
+.map-legend>span:first-child{display:flex;align-items:center;gap:7px}
+.legend-plane{color:#55b879;display:inline-flex}
+@media(max-width:760px){
+ .topbar{height:68px;padding:0 14px;gap:8px}.wordmark strong{font-size:12px}.top-actions{gap:5px}.connection{display:none}.user-chip{padding:5px 7px}.user-label small{display:none}.user-label strong{max-width:76px;overflow:hidden;text-overflow:ellipsis}.sidebar{top:68px;padding:0 8px;gap:0}.nav-item{padding:14px 12px;font-size:12px}.nav-item svg{display:none}.main-content{padding:24px 14px 40px}.live-map-frame{height:310px}.map-legend{gap:10px}.page-heading{gap:12px}.page-heading h1{font-size:24px}
+}
